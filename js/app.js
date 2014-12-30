@@ -4,17 +4,23 @@ var GRID = {
     col: [0, 101, 202, 303, 404, 505]
 }
 
-var ENEMY_START_ROW = [3];
+var ENEMY_START_ROW = [4];
+
+var PLAYER_START = {
+    row: 5,
+    col: 3
+}
+
+var SPRITE_WIDTH = 101;
+var SPRITE_HEIGHT = 83;
 
 
 /** Enemy Class */
-var Enemy = function(x,y,row,width) {
+var Enemy = function(row) {
     this.sprite = 'images/enemy-bug.png';
-    this.x = x;
-    this.y = y;
-    this.row = row;
-    this.width = width;
-
+    this.row = row - 1;
+    this.x = - SPRITE_WIDTH;
+    this.y = GRID.row[this.row] - 20;
 }
 
 /**
@@ -23,9 +29,9 @@ var Enemy = function(x,y,row,width) {
 
 Enemy.prototype.update = function(dt) {
   if (this.x <= ctx.canvas.width) {
-      this.x += 101 * dt;
+      this.x += SPRITE_WIDTH * dt;
    } else {
-       this.x = -101;
+       this.x = -SPRITE_WIDTH;
    }
 }
 
@@ -36,12 +42,14 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+/**
+ *  Get Enemy location
+ */
 Enemy.prototype.getLocation = function() {
     var cells = [];
     // locate the cell where the enemy left edge is located
     for (var column = 1; column < GRID.col.length; column++) {
         if (this.x < GRID.col[column]) {
-            console.log('left edge column: '+ column +  ' content: ' + GRID.col[column]);
             var cell = {};
             cell.row = this.row + 1;
             cell.col = column;
@@ -51,11 +59,10 @@ Enemy.prototype.getLocation = function() {
     }
 
     // locate the cell where the enemy right edge is located
-    var enemyRightEdge = this.x + this.width;
+    var enemyRightEdge = this.x + SPRITE_WIDTH;
     if (enemyRightEdge > GRID.col[1] && enemyRightEdge < GRID.col[GRID.col.length - 1]) {
         for (var column = 2; column < GRID.col.length; column++) {
             if (enemyRightEdge < GRID.col[column]) {
-                console.log('right edge column: '+ column +  ' content: ' + GRID.col[column]);
                 var cell = {};
                 cell.row = this.row + 1;
                 cell.col = column;
@@ -69,15 +76,13 @@ Enemy.prototype.getLocation = function() {
 
 
 /** Player Class */
-var Player = function(x,y,col,row,width,height) {
+var Player = function(row,col) {
     //Player characters
     this.sprite = 'images/char-boy.png';
-    this.x = x;
-    this.y = y;
     this.row = row;
     this.col = col;
-    this.width = width;
-    this.height = height;
+    this.x = GRID.col[col - 1];
+    this.y = GRID.row[row - 1] - 13;
     this.move = '';
     /*this.catGirl = 'images/char-boy.png';
     this.hornGirl = 'images/char-boy.png';
@@ -86,32 +91,39 @@ var Player = function(x,y,col,row,width,height) {
     */
 }
 
+Player.prototype.reset = function() {
+    this.row = PLAYER_START.row;
+    this.col = PLAYER_START.col;
+    this.x = GRID.col[this.col - 1];
+    this.y = GRID.row[this.row - 1] - 13;
+}
+
 Player.prototype.update = function() {
     if (this.move.length > 0) {
         var maxWidth = GRID.col[GRID.col.length - 1];
         var maxHeight = GRID.row[GRID.row.length - 1];
         switch(this.move) {
             case 'left':
-                if (this.x >= this.width) {
-                    this.x -= this.width;
+                if (this.x >= SPRITE_WIDTH) {
+                    this.x -= SPRITE_WIDTH;
                     this.col--;
                 }
                 break;
             case 'right':
-                if (this.x + this.width < maxWidth) {
-                    this.x += this.width;
+                if (this.x + SPRITE_WIDTH < maxWidth) {
+                    this.x += SPRITE_WIDTH;
                     this.col++;
                 }
                 break;
             case 'down':
-                if (this.y + this.height < maxHeight) {
-                    this.y += this.height;
+                if (this.y + SPRITE_HEIGHT < maxHeight) {
+                    this.y += SPRITE_HEIGHT;
                     this.row++;
                 }
                 break;
             case 'up':
-                if (this.y >= this.height - 13) {
-                    this.y -= this.height;
+                if (this.y >= SPRITE_HEIGHT - 13) {
+                    this.y -= SPRITE_HEIGHT;
                     this.row--;
                 }
                 break;
@@ -133,9 +145,9 @@ Player.prototype.handleInput = function(key) {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [];
-var player = new Player(GRID.col[2] , GRID.row[4] - 13, 3, 5, 101, 83);
+var player = new Player(PLAYER_START.row,PLAYER_START.col);
 for (var row in ENEMY_START_ROW) {
-    var enemy = new Enemy(GRID.col[0] - 101, GRID.row[ENEMY_START_ROW[row]] - 20, ENEMY_START_ROW[row], 101);
+    var enemy = new Enemy(ENEMY_START_ROW[row]);
     allEnemies.push(enemy);
 }
 

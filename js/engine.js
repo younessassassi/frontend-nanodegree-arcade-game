@@ -100,18 +100,10 @@ var Engine = (function(global) {
     function checkCollisions() {
         for (var enemy in allEnemies) {
             var cells = allEnemies[enemy].getLocation();
-            console.log('player col = ' + player.col);
-            console.log('player row = ' + player.row);
-            console.log('cells length: ' + cells.length);
             for (var cell in cells) {
-                console.log('cell row: ' + cells[cell].row + ' and col: ' + cells[cell].col);
                 if (player.row === cells[cell].row && player.col === cells[cell].col) {
-                    console.log('collision');
-                     player.x = GRID.col[2];
-                     player.y = GRID.row[4] - 13;
-                     player.col = 3;
-                     player.row = 5;
-                     break;
+                    player.reset();
+                    break;
                 }
             }
         }

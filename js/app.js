@@ -4,7 +4,7 @@ var GRID = {
     col: [0, 101, 202, 303, 404, 505]
 }
 
-var ENEMY_START_ROW = [4];
+//var ENEMY_START_ROW = [2, 3, 2, 3, 4, 2, 4];
 
 var PLAYER_START = {
     row: 5,
@@ -14,13 +14,15 @@ var PLAYER_START = {
 var SPRITE_WIDTH = 101;
 var SPRITE_HEIGHT = 83;
 
+var allEnemies = [];
 
 /** Enemy Class */
-var Enemy = function(row) {
+var Enemy = function(row,x,speed) {
     this.sprite = 'images/enemy-bug.png';
     this.row = row - 1;
-    this.x = - SPRITE_WIDTH;
+    this.x = x;
     this.y = GRID.row[this.row] - 20;
+    this.speed = speed;
 }
 
 /**
@@ -29,9 +31,11 @@ var Enemy = function(row) {
 
 Enemy.prototype.update = function(dt) {
   if (this.x <= ctx.canvas.width) {
-      this.x += SPRITE_WIDTH * dt;
+      this.x += dt * this.speed;
    } else {
-       this.x = -SPRITE_WIDTH;
+       this.x = Math.floor((Math.random() * (- 500)) - SPRITE_WIDTH);
+       this.row = (Math.floor((Math.random() * 3) + 2)) - 1;
+       this.y = GRID.row[this.row] - 20;
    }
 }
 
@@ -144,11 +148,17 @@ Player.prototype.handleInput = function(key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [];
-var player = new Player(PLAYER_START.row,PLAYER_START.col);
-for (var row in ENEMY_START_ROW) {
-    var enemy = new Enemy(ENEMY_START_ROW[row]);
-    allEnemies.push(enemy);
+var player = new Player(PLAYER_START.row, PLAYER_START.col);
+generateEnemies(6);
+
+function generateEnemies(maxEnemies) {
+    for (var i = 0; i < maxEnemies; i++) {
+        var row = Math.floor((Math.random() * 3) + 2);
+        var leftPoint = Math.floor((Math.random() * (- 500)) - SPRITE_WIDTH);
+        var speed = Math.floor((Math.random() * 200) + 100);
+        var enemy = new Enemy(row, leftPoint, speed);
+        allEnemies.push(enemy);
+    }
 }
 
 

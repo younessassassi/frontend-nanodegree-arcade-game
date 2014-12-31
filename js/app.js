@@ -103,8 +103,7 @@ Player.prototype.reset = function() {
 }
 
 Player.prototype.update = function() {
-    if (this.move.length > 0) {
-        var maxWidth = GRID.col[GRID.col.length - 1];
+    var maxWidth = GRID.col[GRID.col.length - 1];
         var maxHeight = GRID.row[GRID.row.length - 1];
         switch(this.move) {
             case 'left':
@@ -135,7 +134,6 @@ Player.prototype.update = function() {
                 break;
         }
         this.move = '';
-    }
 }
 
 Player.prototype.render = function() {
@@ -174,4 +172,11 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+// disable scrolling.
+document.addEventListener('keydown', function(e) {
+  if ([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    e.preventDefault();
+  }
+}, false);
 

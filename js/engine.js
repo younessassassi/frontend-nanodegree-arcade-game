@@ -101,7 +101,7 @@ var Engine = (function(global) {
         for (var enemy in allEnemies) {
             var cells = allEnemies[enemy].getLocation();
             for (var cell in cells) {
-                if (player.row === cells[cell].row && player.col === cells[cell].col) {
+                if ((player.row === 1) || (player.row === cells[cell].row && player.col === cells[cell].col)) {
                     player.reset();
                     break;
                 }

@@ -45,9 +45,10 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
-
+        if (gamePause === false) {
+            update(dt);
+            render();
+        }
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -80,7 +81,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        checkCollisions();
+     // checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -95,18 +96,6 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-    }
-
-    function checkCollisions() {
-        for (var enemy in allEnemies) {
-            var cells = allEnemies[enemy].getLocation();
-            for (var cell in cells) {
-                if ((player.row === 1) || (player.row === cells[cell].row && player.col === cells[cell].col)) {
-                    player.reset();
-                    break;
-                }
-            }
-        }
     }
 
     /* This function initially draws the "game level", it will then call
@@ -172,7 +161,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -184,7 +173,15 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Gem Orange.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Heart.png'
     ]);
     Resources.onReady(init);
 

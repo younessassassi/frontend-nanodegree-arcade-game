@@ -54,6 +54,10 @@ Score.prototype.render = function() {
     ctx.fillText('Score: ' + this.points, x, 40);
 }
 
+Score.prototype.reset = function() {
+    this.points = 0;
+}
+
 /** Gem class */
 var Gem = function(row,col) {
     this.sprite = gemSprites[Math.floor(Math.random() * 3)];
@@ -106,9 +110,7 @@ Enemy.prototype.update = function(dt) {
   if (this.x <= ctx.canvas.width) {
       this.x += dt * this.speed;
    } else {
-       this.x = Math.floor((Math.random() * (- 500)) - SPRITE_WIDTH);
-       this.row = (Math.floor((Math.random() * 3) + 2)) - 1;
-       this.y = GRID.row[this.row] - 20;
+       this.reset();
    }
    // check for player collision
    if (this.row  === player.row) {
@@ -163,6 +165,15 @@ Enemy.prototype.getLocation = function() {
     }
 
     return cells;
+}
+
+/**
+ *  Reset the enemy locations
+ */
+Enemy.prototype.reset = function() {
+    this.x = Math.floor((Math.random() * (- 500)) - SPRITE_WIDTH);
+    this.row = (Math.floor((Math.random() * 3) + 2)) - 1;
+    this.y = GRID.row[this.row] - 20;
 }
 
 

@@ -176,9 +176,9 @@ var Engine = (function(global) {
      */
     function reset() {
         allEnemies.forEach(function(enemy) {
-            enemy.x = ctx.canvas.width + 1;
+            enemy.reset();
         });
-        score.points = 0;
+        score.reset();
         health.level = HEALTH_LEVEL;
         gameOver = false;
         gamePause = false;

@@ -4,8 +4,11 @@ var GRID = {
     col: [0, 101, 202, 303, 404, 505]
 }
 
+var gemDisplayCounter = 1;
+
 var gamePause = false,
-    gameRestart = false;
+    gameRestart = false,
+    gameOver = false;
 
 var PLAYER_START = {
     row: 5,
@@ -13,7 +16,9 @@ var PLAYER_START = {
 }
 
 var SPRITE_WIDTH = 101,
-    SPRITE_HEIGHT = 83;
+    SPRITE_HEIGHT = 83,
+    HEALTH_LEVEL = 5,
+    ENEMY_COUNT = 5;
 
 var playerSprites = [
     'images/char-boy.png',
@@ -23,7 +28,66 @@ var playerSprites = [
     'images/char-princess-girl.png'
 ];
 
-var allEnemies = [];
+var gemSprites = [
+    'images/Gem Orange.png',
+    'images/Gem Green.png',
+    'images/Gem Blue.png'
+];
+
+var allEnemies = [],
+    healthLevel = [];
+
+/** Score Class */
+var Score = function(x,y) {
+    this.x = x;
+    this.y = y;
+    this.points = 0;
+}
+
+/**
+ * Displays score
+ */
+Score.prototype.render = function() {
+    ctx.font = "20px Georgia";
+    ctx.fillStyle = 'black';
+    ctx.fillText(this.points, 300, 5);
+}
+
+/** Gem class */
+var Gem = function(row,col) {
+    this.sprite = gemSprites[Math.floor(Math.random() * 3)];
+    this.scoreImpact = 100;
+    this.row = row - 1;
+    this.col = col - 1;
+    this.x = GRID.col[this.col];
+    this.y = GRID.row[this.row] - 26;
+}
+
+/**
+ * updates Gem position
+ */
+Gem.prototype.update = function(dt) {
+    gemDisplayCounter += gemDisplayCounter * dt;
+    if (this.row === player.row && this.col === player.col) {
+        Score.points += this.scoreImpact;
+        gemDisplayCounter = 90;
+    }
+    if (gemDisplayCounter > 80) {
+        gemDisplayCounter = 1;
+        this.sprite = gemSprites[Math.floor(Math.random() * 3)];
+        this.row = (Math.floor(Math.random() * 3) + 1);
+        this.col = (Math.floor(Math.random() * 8));
+        this.x = GRID.col[this.col];
+        this.y = GRID.row[this.row] - 26;
+    }
+}
+
+/**
+ * Displays Gem on screen
+ */
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
 
 /** Enemy Class */
 var Enemy = function(row,x,speed) {
@@ -35,9 +99,8 @@ var Enemy = function(row,x,speed) {
 }
 
 /**
- * update enemy position
+ * updates enemy position
  */
-
 Enemy.prototype.update = function(dt) {
   if (this.x <= ctx.canvas.width) {
       this.x += dt * this.speed;
@@ -46,21 +109,13 @@ Enemy.prototype.update = function(dt) {
        this.row = (Math.floor((Math.random() * 3) + 2)) - 1;
        this.y = GRID.row[this.row] - 20;
    }
-
-
    // check for player collision
    if (this.row  === player.row) {
-         // console.log('cell: ' + cells[cell].row + ' ' + cells[cell].col);
-         //    console.log('player: ' + player.row + ' ' + player.col);
-
         var cells = this.getLocation();
         for (var cell in cells) {
-          //   console.log('cell: ' + cells[cell].row + ' ' + cells[cell].col);
-            // console.log('player: ' + player.row + ' ' + player.col);
-           // gamePause = true;
-
             if (player.col === cells[cell].col) {
                 player.reset();
+                health.update(false);
                 break;
             }
         }
@@ -68,14 +123,14 @@ Enemy.prototype.update = function(dt) {
 }
 
 /**
- * Draw enemy on screen
+ * Draws enemy on screen
  */
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 /**
- *  Get Enemy location
+ *  Gets Enemy location
  */
 Enemy.prototype.getLocation = function() {
     var cells = [];
@@ -118,16 +173,24 @@ var Player = function(row,col) {
     this.col = col - 1;
     this.x = GRID.col[this.col];
     this.y = GRID.row[this.row] - 13;
+    this.score = 0;
     this.move = '';
 }
 
+/**
+ * Resets the player's position coordinates
+*/
 Player.prototype.reset = function() {
     this.row = PLAYER_START.row - 1;
     this.col = PLAYER_START.col - 1;
     this.x = GRID.col[this.col];
     this.y = GRID.row[this.row] - 13;
+
 }
 
+/**
+ * Updates the player location.
+ */
 Player.prototype.update = function() {
     var maxWidth = GRID.col[GRID.col.length - 1];
     var maxHeight = GRID.row[GRID.row.length - 1];
@@ -163,14 +226,21 @@ Player.prototype.update = function() {
 
     // check if player fell in water
     if (player.row === 0) {
+        health.update(false);
         player.reset();
     }
 }
 
+/**
+ * Displays the player on the screen.
+ */
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+/**
+ * Handles pressed keyboard keys.
+ */
 Player.prototype.handleInput = function(key) {
     if(key === 'pauseToggle') {
         if (gamePause === true) {
@@ -182,12 +252,50 @@ Player.prototype.handleInput = function(key) {
         this.move = key;
     }
 }
+
+/** Health class */
+var Health = function(level) {
+    this.sprite = 'images/Heart.png';
+    this.level = level;
+}
+
+/**
+ * Increase or decrease the player health level.
+ */
+Health.prototype.update = function(isUp){
+    if (isUp) {
+        thisLevel++;
+    } else {
+        if (this.level > 0) {
+            this.level--;
+         } else {
+            gameOver = true;
+        }
+    }
+}
+
+/**
+ * Displays the player health level.
+ */
+Health.prototype.render = function() {
+    var x = 0;
+    var y = 5;
+    ctx.clearRect(x, y, 200, 40);
+    for (var i = 0; i < this.level; i++) {
+        ctx.drawImage(Resources.get(this.sprite), x, y, 32, 50);
+        x += 30;
+    }
+}
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var player = new Player(PLAYER_START.row, PLAYER_START.col);
-generateEnemies(5);
+generateEnemies(ENEMY_COUNT);
+var health = new Health(HEALTH_LEVEL);
+var gem = new Gem(3,2);
 
+// This spawns a number of enemies in random locations on the screen
 function generateEnemies(maxEnemies) {
     for (var i = 0; i < maxEnemies; i++) {
         var row = Math.floor((Math.random() * 3) + 2);
@@ -197,6 +305,14 @@ function generateEnemies(maxEnemies) {
         var enemy = new Enemy(row, leftPoint, speed);
         allEnemies.push(enemy);
     }
+}
+
+// This generates the gems and rock
+function generateCollectibles() {
+
+    var rockSprite = 'images/Rock.png';
+
+    var keySprite = 'images/Heart.png';
 }
 
 // This listens for key presses and sends the keys to your
@@ -209,11 +325,10 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-// disable scrolling.
+// This disables scrolling.
 document.addEventListener('keydown', function(e) {
   if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
     e.preventDefault();

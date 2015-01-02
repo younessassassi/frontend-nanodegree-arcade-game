@@ -299,9 +299,8 @@ Health.prototype.render = function() {
     }
 }
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+// This instantiates the various objects
+
 var player = new Player(PLAYER_START.row, PLAYER_START.col);
 var health = new Health(HEALTH_LEVEL);
 var gem = new Gem(3,2);
@@ -309,6 +308,7 @@ var score = new Score();
 generateEnemies(ENEMY_COUNT);
 
 
+/** Helper functions */
 // This spawns a number of enemies in random locations on the screen
 function generateEnemies(maxEnemies) {
     for (var i = 0; i < maxEnemies; i++) {
@@ -321,6 +321,7 @@ function generateEnemies(maxEnemies) {
     }
 }
 
+// This displays text on screen when the game is paused or over for example
 function displayText(text) {
     ctx.font = "50px Verdana";
     ctx.fillStyle = 'white';
@@ -328,7 +329,7 @@ function displayText(text) {
 }
 
 // This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+// Player.handleInput() method.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         32: 'pauseToggle',

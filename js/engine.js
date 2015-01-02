@@ -1,24 +1,5 @@
-/* Engine.js
- * This file provides the game loop functionality (update entities and render),
- * draws the initial game board on the screen, and then calls the update and
- * render methods on your player and enemy objects (defined in your app.js).
- *
- * A game engine works by drawing the entire game screen over and over, kind of
- * like a flipbook you may have created as a kid. When your player moves across
- * the screen, it may look like just that image/character is moving or being
- * drawn but that is not the case. What's really happening is the entire "scene"
- * is being drawn over and over, presenting the illusion of animation.
- *
- * This engine is available globally via the Engine variable and it also makes
- * the canvas' context (ctx) object globally available to make writing app.js
- * a little simpler to work with.
- */
 
 var Engine = (function(global) {
-    /* Predefine the variables we'll be using within this scope,
-     * create the canvas element, grab the 2D context for that canvas
-     * set the canvas elements height/width and add it to the DOM.
-     */
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
@@ -26,6 +7,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    // This adds parameters to the reset button
     replayButton.className = 'button';
     replayButton.type = 'Button';
     replayButton.value = 'Restart';
@@ -42,8 +24,7 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
-        /* Get our time delta information which is required if your game
-         * requires smooth animation. Because everyone's computer processes
+        /* Get our time delta information which is required if the game
          * instructions at different speeds we need a constant value that
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
@@ -86,22 +67,22 @@ var Engine = (function(global) {
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
-     * you implement your collision detection (when two entities occupy the
-     * same space, for instance when your character should die), you may find
+     * you implement the collision detection (when two entities occupy the
+     * same space, for instance when the character should die), you may find
      * the need to add an additional function call here. For now, we've left
      * it commented out - you may or may not want to implement this
      * functionality this way (you could just implement collision detection
-     * on the entities themselves within your app.js file).
+     * on the entities themselves within the app.js file).
      */
     function update(dt) {
         updateEntities(dt);
     }
 
     /* This is called by the update function  and loops through all of the
-     * objects within your allEnemies array as defined in app.js and calls
-     * their update() methods. It will then call the update function for your
+     * objects within the allEnemies array as defined in app.js and calls
+     * their update() methods. It will then call the update function for the
      * player object. These update methods should focus purely on updating
-     * the data/properties related to  the object. Do your drawing in your
+     * the data/properties related to  the object. Do the drawing in the
      * render methods.
      */
     function updateEntities(dt) {
@@ -155,7 +136,7 @@ var Engine = (function(global) {
 
     /* This function is called by the render function and is called on each game
      * tick. It's purpose is to then call the render functions you have defined
-     * on your enemy and player entities within app.js
+     * on the enemy and player entities within app.js
      */
     function renderEntities() {
         /* Loop through all of the objects within the allEnemies array and call

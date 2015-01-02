@@ -22,12 +22,21 @@ var Engine = (function(global) {
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
+        replayButton = doc.createElement('input'),
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    replayButton.className = 'button';
+    replayButton.type = 'Button';
+    replayButton.value = 'Restart';
+    replayButton.onclick = function () {reset();};
+
     canvas.width = 505;
     canvas.height = 606;
+    doc.body.appendChild(replayButton);
     doc.body.appendChild(canvas);
+
+
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -46,10 +55,10 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
         if (gameOver === true) {
-            console.log('Game over');
+             displayText('Game Over');
 
         } else if (gamePause === true) {
-            console.log('Game Paused');
+            displayText('Game Paused');
         } else {
             update(dt);
             render();
@@ -86,7 +95,6 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-     // checkCollisions();
     }
 
     /* This is called by the update function  and loops through all of the
@@ -170,6 +178,10 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.x = ctx.canvas.width + 1;
         });
+        score.points = 0;
+        health.level = HEALTH_LEVEL;
+        gameOver = false;
+        gamePause = false;
         player.reset();
     }
 

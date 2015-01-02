@@ -7,7 +7,6 @@ var GRID = {
 var gemDisplayCounter = 1;
 
 var gamePause = false,
-    gameRestart = false,
     gameOver = false;
 
 var PLAYER_START = {
@@ -17,7 +16,7 @@ var PLAYER_START = {
 
 var SPRITE_WIDTH = 101,
     SPRITE_HEIGHT = 83,
-    HEALTH_LEVEL = 5,
+    HEALTH_LEVEL = 3,
     ENEMY_COUNT = 5;
 
 var playerSprites = [
@@ -78,7 +77,7 @@ Gem.prototype.update = function(dt) {
         gemDisplayCounter = 1;
         this.sprite = gemSprites[Math.floor(Math.random() * 3)];
         this.row = (Math.floor(Math.random() * 3) + 1);
-        this.col = (Math.floor(Math.random() * 8));
+        this.col = (Math.floor(Math.random() * 4));
         this.x = GRID.col[this.col];
         this.y = GRID.row[this.row] - 26;
     }
@@ -293,10 +292,11 @@ Health.prototype.render = function() {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var player = new Player(PLAYER_START.row, PLAYER_START.col);
-generateEnemies(ENEMY_COUNT);
 var health = new Health(HEALTH_LEVEL);
 var gem = new Gem(3,2);
 var score = new Score();
+generateEnemies(ENEMY_COUNT);
+
 
 // This spawns a number of enemies in random locations on the screen
 function generateEnemies(maxEnemies) {
@@ -310,12 +310,10 @@ function generateEnemies(maxEnemies) {
     }
 }
 
-// This generates the gems and rock
-function generateCollectibles() {
-
-    var rockSprite = 'images/Rock.png';
-
-    var keySprite = 'images/Heart.png';
+function displayText(text) {
+    ctx.font = "50px Verdana";
+    ctx.fillStyle = 'white';
+    ctx.fillText(text, 101, 300);
 }
 
 // This listens for key presses and sends the keys to your

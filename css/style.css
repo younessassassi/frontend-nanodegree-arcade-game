@@ -1,3 +1,18 @@
 body {
     text-align: center;
 }
+
+.button {
+  	display: block;
+    margin-left: 480px;
+    height: 28px;
+    width: 100px;
+    background: black;
+    border: 2px solid black;
+    outline: none;
+
+  	color: white;
+    text-align: center;
+    font: 20px sans-serif;
+    border-radius: 5px;
+}

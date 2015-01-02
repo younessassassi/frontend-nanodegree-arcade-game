@@ -16,7 +16,7 @@ var PLAYER_START = {
 
 var SPRITE_WIDTH = 101,
     SPRITE_HEIGHT = 83,
-    HEALTH_LEVEL = 3,
+    HEALTH_LEVEL = 6,
     ENEMY_COUNT = 5;
 
 var playerSprites = [

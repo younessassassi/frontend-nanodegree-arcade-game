@@ -143,7 +143,6 @@ var Engine = (function(global) {
             }
         }
         renderEntities();
-      //  renderText();
     }
 
     /* This function is called by the render function and is called on each game
@@ -160,6 +159,7 @@ var Engine = (function(global) {
         health.render();
         player.render();
         gem.render();
+        score.render();
     }
 
     /* This function does nothing but it could have been a good place to

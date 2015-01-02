@@ -48,15 +48,17 @@ var Score = function(x,y) {
  * Displays score
  */
 Score.prototype.render = function() {
-    ctx.font = "20px Georgia";
+    var x = 390;
+    ctx.clearRect(x, 0, 200, 50);
+    ctx.font = "20px Verdana";
     ctx.fillStyle = 'black';
-    ctx.fillText(this.points, 300, 5);
+    ctx.fillText('Score: ' + this.points, x, 40);
 }
 
 /** Gem class */
 var Gem = function(row,col) {
     this.sprite = gemSprites[Math.floor(Math.random() * 3)];
-    this.scoreImpact = 100;
+    this.scoreImpact = 1;
     this.row = row - 1;
     this.col = col - 1;
     this.x = GRID.col[this.col];
@@ -69,7 +71,7 @@ var Gem = function(row,col) {
 Gem.prototype.update = function(dt) {
     gemDisplayCounter += gemDisplayCounter * dt;
     if (this.row === player.row && this.col === player.col) {
-        Score.points += this.scoreImpact;
+        score.points += this.scoreImpact;
         gemDisplayCounter = 90;
     }
     if (gemDisplayCounter > 80) {
@@ -294,6 +296,7 @@ var player = new Player(PLAYER_START.row, PLAYER_START.col);
 generateEnemies(ENEMY_COUNT);
 var health = new Health(HEALTH_LEVEL);
 var gem = new Gem(3,2);
+var score = new Score();
 
 // This spawns a number of enemies in random locations on the screen
 function generateEnemies(maxEnemies) {

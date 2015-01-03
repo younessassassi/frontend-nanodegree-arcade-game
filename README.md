@@ -12,8 +12,8 @@ Directions:
 To start playing just use the arrow keys to move.  You can use the restart button to restart the game at any time, or you can pause the game using the space bar.\s\s
 
 Arrow Keys:\s\s
-Up    :  player goes up\s\s
-Down  :  player goes down\s\s
+Up    :  player goes up<br \>
+Down  :  player goes down<br>
 Left  :  player goes left\s\s
 Down  :  player goes down\s\s
 

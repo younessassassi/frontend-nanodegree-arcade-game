@@ -1,6 +1,8 @@
 frontend-nanodegree-arcade-game
 ===============================
 
+Click [here](http://younessassassi.github.io/frontend-nanodegree-arcade-game/) to play the game.
+
 Description:
 ------------
 A one level Frogger game where you can collect gems to increase the score.  The health level will decrease every time you collide with a bug or go into the water.
